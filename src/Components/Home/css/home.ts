@@ -59,3 +59,40 @@ export const FileInputLabel = styled.label`
     font-size: 16px;
     margin-top: 20px;
 `;
+
+export const OptionForm = styled.option`
+    width: 564px;
+    height: 56px;
+    background-color: #7A5CFA;
+    color: white;
+`;
+
+export const SelectForm = styled.select`
+    width: 564px;
+    height: 56px;
+    background-color: #7A5CFA;
+    color: white;
+    border-radius: 8px;
+    padding-left: 20px;
+`;
+
+export const ButtonSubmit = styled.button`
+    width: 172px;
+    height: 56px;
+    background-color: #7A5CFA;
+    border-radius: 8px;
+    border: none;
+    color: white;
+    margin-top: 20px;
+    display: flex;
+    align-self: self-end;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    &:hover {
+        transition: all 0.5s;
+        transform: scale(1.05);
+        background-color: #7A5CFB;
+    }
+`;

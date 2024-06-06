@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { Container, FileInput, FileInputLabel, InputForm, Label, Page } from "./css/home"
+import { ButtonSubmit, Container, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home"
 
 
 export const HomeComponent = () => {
@@ -11,7 +11,7 @@ export const HomeComponent = () => {
         if(event.target.files && event.target.files.length > 0) {
             setFileName(event.target.files[0].name);
         }
-    } 
+    }
 
     return (
         <Page>
@@ -36,17 +36,19 @@ export const HomeComponent = () => {
                         ref={fileInputRef}
                         onChange={handleFileChange}
                         />
-                    <FileInputLabel htmlFor="file">Imagem</FileInputLabel>
+                    <FileInputLabel htmlFor="file">Imagem do produto</FileInputLabel>
                     
                     <Label>Descrição</Label>
                     <InputForm placeholder="Descrição"/>
 
                     <Label>Status</Label>
                 
-                    <select>
-                        <option value="">Ativo</option>
-                        <option value="">Inativo</option>
-                    </select>
+                    <SelectForm>
+                        <OptionForm value="">Ativo</OptionForm>
+                        <OptionForm value="">Inativo</OptionForm>
+                    </SelectForm>
+
+                    <ButtonSubmit>Cadastrar</ButtonSubmit>
 
                 </form>
             </Container>
