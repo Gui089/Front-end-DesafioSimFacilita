@@ -1,17 +1,26 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ButtonSubmit, Container, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home"
+import { productService } from "../../domain/product/productService";
 
 
 export const HomeComponent = () => {
 
     const fileInputRef = useRef(null);
     const [fileName, setFileName] = useState("No file chosen");
+    const [products, setProducts] = useState([]);
 
     const handleFileChange = (event:React.ChangeEvent<HTMLInputElement>) => {
         if(event.target.files && event.target.files.length > 0) {
             setFileName(event.target.files[0].name);
         }
     }
+
+    useEffect(() => {
+        productService.getProduct().then((product) => setProducts(product));
+    }, []);
+
+    console.log(products);
+    
 
     return (
         <Page>
