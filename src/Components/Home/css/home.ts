@@ -96,3 +96,9 @@ export const ButtonSubmit = styled.button`
         background-color: #7A5CFB;
     }
 `;
+
+export const ErrorMessageInput = styled.p`
+    font-family: sans-serif;
+    color: #EB5757;
+    font-weight: bold;
+`;

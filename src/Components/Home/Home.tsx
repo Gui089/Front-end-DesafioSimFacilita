@@ -1,18 +1,37 @@
 import { useEffect, useRef, useState } from "react";
-import { ButtonSubmit, Container, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home";
+import { ButtonSubmit, Container, ErrorMessageInput, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home";
 import { ProductTypes } from "../../domain/product/productTypes";
 import { CreateProductData, productService } from "../../domain/product/productService";
+import {Toaster} from 'sonner';
+import { toast } from 'sonner';
+import { Controller, useForm } from "react-hook-form";
+import { ProductSchema, productValidationSchema } from "../../schema/productValidation";
+import { zodResolver } from '@hookform/resolvers/zod';
+
 
 export const HomeComponent = () => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState("No file chosen");
     const [products, setProducts] = useState<ProductTypes[]>([]);
     const [productName, setProductName] = useState("");
-    const [price, setPrice] = useState("");
-    const [quantity, setQuantity] = useState("");
-    const [photo, setPhoto] = useState<File | null>(null);
+    const [price, setPrice] = useState<number>(0);
+    const [quantity, setQuantity] = useState<number>(0);
+    const [photo, setPhoto] = useState<File | undefined>(undefined);
     const [description, setDescription] = useState("");
     const [status, setStatus] = useState("Ativo");
+
+    const {control} = useForm<ProductSchema>({
+        resolver: zodResolver(productValidationSchema),
+        defaultValues:{
+            product_name:'',
+            price:'',
+            quantity:'',
+            photo:undefined,
+            description:'',
+            status:''
+        },
+        mode:'onChange'
+    });
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files.length > 0) {
@@ -26,7 +45,8 @@ export const HomeComponent = () => {
         productService.getProduct().then((product) => setProducts(product));
     }, []); 
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+
+    const formSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
     
         if (!productName || !price || !quantity || !description) {
@@ -37,8 +57,8 @@ export const HomeComponent = () => {
         try {
             const formData = new FormData();
             formData.append('product_name', productName);
-            formData.append('price', price);
-            formData.append('quantity', quantity);
+            formData.append('price', price.toString());
+            formData.append('quantity', quantity.toString());
             if (photo) {
                 formData.append('photo', photo);
             }
@@ -54,6 +74,7 @@ export const HomeComponent = () => {
                 status: formData.get('status') as string
             };
     
+            toast("Produto cadastrado com seucesso");
             console.log("CreateProductData:", createProductData);
     
             const newProduct = await productService.createProduct(createProductData);
@@ -66,27 +87,65 @@ export const HomeComponent = () => {
     return (
         <Page>
             <Container>
-                <form onSubmit={handleSubmit} style={{ marginTop: 30, display: 'flex', flexDirection: 'column' }}>
-                    <Label>Nome do produto</Label>
-                    <InputForm 
-                        placeholder="Nome do Produto" 
-                        value={productName} 
-                        onChange={(e) => setProductName(e.target.value)} 
+                <form onSubmit={formSubmit} style={{ marginTop: 30, display: 'flex', flexDirection: 'column' }}>
+
+                    <Controller
+                        control={control}
+                        name="product_name"
+                        render={({field, fieldState}) => (
+                            <>
+                                <Label>Nome do produto</Label>
+                                <InputForm 
+                                    placeholder="Nome do Produto" 
+                                    value={field.value} 
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setProductName(e.target.value);
+                                    }} 
+                                />
+                                {fieldState.error && <ErrorMessageInput>Nome deve ter no mínimo 2 caracteres</ErrorMessageInput>}
+                            </>
+                        )}
                     />
                     
-                    <Label>Preço do produto</Label>
-                    <InputForm 
-                        placeholder="Preço do produto" 
-                        value={price} 
-                        onChange={(e) => setPrice(e.target.value)} 
+                    <Controller
+                        control={control}
+                        name="price"
+                        render={({field, fieldState}) => (
+                            <>
+                                <Label>Preço do produto</Label>
+                                <InputForm 
+                                    type="number"
+                                    placeholder="Preço do produto" 
+                                    value={field.value} 
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setPrice(Number(e.target.value));
+                                    }} 
+                                />
+                                {fieldState.error && <ErrorMessageInput>Preço deve ser maior que 0</ErrorMessageInput>}
+                            </>
+                        )}
                     />
 
-                    <Label>Quantidade</Label>
-                    <InputForm 
-                        type="number" 
-                        placeholder="Quantidade" 
-                        value={quantity} 
-                        onChange={(e) => setQuantity(e.target.value)} 
+                    <Controller
+                        control={control}
+                        name="quantity"
+                        render={({field, fieldState}) => (
+                            <>
+                                <Label>Quantidade</Label>
+                                <InputForm 
+                                    type="number"
+                                    placeholder="Quantidade" 
+                                    value={field.value} 
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setQuantity(Number(e.target.value));
+                                    }} 
+                                />
+                                {fieldState.error && <ErrorMessageInput>Quantidade deve ser maior que 0</ErrorMessageInput>}
+                            </>
+                        )}
                     />
 
                     <FileInput 
@@ -97,11 +156,23 @@ export const HomeComponent = () => {
                     />
                     <FileInputLabel htmlFor="file">Imagem do produto</FileInputLabel>
                     
-                    <Label>Descrição</Label>
-                    <InputForm 
-                        placeholder="Descrição" 
-                        value={description} 
-                        onChange={(e) => setDescription(e.target.value)} 
+                    <Controller
+                        control={control}
+                        name="description"
+                        render={({field, fieldState}) => (
+                            <>
+                                <Label>Descrição</Label>
+                                <InputForm 
+                                    placeholder="Descrição" 
+                                    value={field.value} 
+                                    onChange={(e) => {
+                                        field.onChange(e);
+                                        setDescription(e.target.value);
+                                    }} 
+                                />
+                                {fieldState.error && <ErrorMessageInput>Descrição deve ter no mínimo 5 caracters</ErrorMessageInput>}
+                            </>
+                        )}
                     />
 
                     <Label>Status</Label>
@@ -115,6 +186,9 @@ export const HomeComponent = () => {
                     </SelectForm>
 
                     <ButtonSubmit type="submit">Cadastrar</ButtonSubmit>
+
+                    <Toaster 
+                        position="top-center" />
                 </form>
             </Container>
         </Page>
