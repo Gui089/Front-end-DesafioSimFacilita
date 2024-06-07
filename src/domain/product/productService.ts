@@ -1,33 +1,27 @@
-
-import { productApi } from "./productApi";
+import { api } from "../../api/apiConfig";
 import { ProductTypes } from "./productTypes";
 
-
-async function createProductService(
-    product_name: string, 
-    price:number, 
-    quantity:number, 
-    photo: string, 
-    description: string, 
-    status:string):Promise<ProductTypes> {
-        
-        const productAPI = await productApi.createProduct(
-            product_name, 
-            price, 
-            quantity,
-            photo,
-            description,
-            status
-        );
-
-        return productAPI;
+async function getProduct(): Promise<ProductTypes[]> {
+    const response = await api.get('/product');
+    return response.data;
 }
 
-async function getProduct(): Promise<ProductTypes> {
-    return await productApi.getProduct();
+export interface CreateProductData {
+    product_name: ProductTypes['product_name'];
+    price: number;
+    quantity: number;
+    photo: string | File;
+    description: string;
+    status: string;
+}
+
+async function createProduct(data: CreateProductData): Promise<ProductTypes []> {
+    const response = await api.post('/product', data);
+    return response.data;
 }
 
 export const productService = {
-    createProductService,
+    createProduct,
     getProduct
-}
+};
+
