@@ -15,7 +15,15 @@ async function createProduct(formData: FormData): Promise<ProductTypes> {
     return response.data;
 }
 
+async function deleteProduct(productId: string) {
+    const response = await api.delete(`/product/${productId}`);
+    console.log(productId);
+    
+    return response.data;
+}
+
 export const productApi = {
     createProduct,
     getProduct,
+    deleteProduct
 };

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ButtonSubmit, Container, ErrorMessageInput, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home";
+import { ButtonNavLink, ButtonSubmit, Container, ErrorMessageInput, FileInput, FileInputLabel, InputForm, Label, OptionForm, Page, SelectForm } from "./css/home";
 import { ProductTypes } from "../../domain/product/productTypes";
 import { CreateProductData, productService } from "../../domain/product/productService";
 import {Toaster} from 'sonner';
@@ -7,6 +7,7 @@ import { toast } from 'sonner';
 import { Controller, useForm } from "react-hook-form";
 import { ProductSchema, productValidationSchema } from "../../schema/productValidation";
 import { zodResolver } from '@hookform/resolvers/zod';
+import { NavLink } from "react-router-dom";
 
 
 export const HomeComponent = () => {
@@ -40,11 +41,6 @@ export const HomeComponent = () => {
             setPhoto(file);
         }
     };
-
-    useEffect(() => {
-        productService.getProduct().then((product) => setProducts(product));
-    }, []); 
-
 
     const formSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -186,6 +182,12 @@ export const HomeComponent = () => {
                     </SelectForm>
 
                     <ButtonSubmit type="submit">Cadastrar</ButtonSubmit>
+
+                    <NavLink style={{textDecoration:'none'}} to="/products">
+                        <ButtonNavLink>
+                            Produtos
+                        </ButtonNavLink>
+                    </NavLink>
 
                     <Toaster 
                         position="top-center" />

@@ -97,6 +97,21 @@ export const ButtonSubmit = styled.button`
     }
 `;
 
+export const ButtonNavLink = styled.button`
+    width: 172px;
+    height: 56px;
+    background-color: white;
+    border-radius: 8px;
+    border: 2px solid #7A5CFB;
+    color: #7A5CFB;
+    cursor: pointer;
+    margin-top: -55px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+`;
+
 export const ErrorMessageInput = styled.p`
     font-family: sans-serif;
     color: #EB5757;
